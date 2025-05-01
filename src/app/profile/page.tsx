@@ -21,9 +21,10 @@ import NoFitnessPlan from "@/components/NoFitnessPlan";
 
 interface ExerciseDay {
   day: string;
-  exercies: string[];
+  exercies?: string[];
   sets?: number;
   reps?: number;
+  duration?: string;
   description?: string;
 }
 
@@ -174,14 +175,14 @@ export default function ProfilePage() {
                             <div className="flex justify-between w-full items-center">
                               <span className="text-primary">{exerciseDay.day}</span>
                               <div className="text-xs text-muted-foreground">
-                                {exerciseDay.exercies.length} EXERCISES
+                                {exerciseDay.exercies?.length} EXERCISES
                               </div>
                             </div>
                           </AccordionTrigger>
 
                           <AccordionContent className="pb-4 px-4">
                             <div className="space-y-3 mt-2">
-                              {exerciseDay.exercies.map((exercise, exerciseIndex) => (
+                              {exerciseDay.exercies?.map((exercise, exerciseIndex) => (
                                 <div
                                   key={exerciseIndex}
                                   className="border border-border rounded p-3 bg-background/50"

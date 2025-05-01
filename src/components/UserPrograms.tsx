@@ -1,393 +1,207 @@
-"use client";
-
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { vapi } from "@/lib/vapi";
-import { useUser } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  ChevronRight,
+  Dumbbell,
+  Sparkles,
+  Users,
+  Clock,
+  AppleIcon,
+  ShieldIcon,
+} from "lucide-react";
+import { USER_PROGRAMS } from "@/contants";
 
-interface ExerciseDay {
-  day: string;
-  exercies: string[];
-  sets?: number;
-  reps?: number;
-  description?: string;
-}
-
-interface WorkoutPlan {
-  schedule: string[];
-  exercies: ExerciseDay[];
-}
-
-interface DietPlan {
-  dailyCalories: number;
-  meals: {
-    name: string;
-    foods: string[];
-  }[];
-}
-
-interface FitnessPlan {
-  workoutPlan: WorkoutPlan;
-  dietPlan: DietPlan;
-  name: string;
-  isActive: boolean;
-}
-
-const GenerateProgramPage = () => {
-  const [callActive, setCallActive] = useState(false);
-  const [connecting, setConnecting] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [messages, setMessages] = useState<any[]>([]);
-  const [callEnded, setCallEnded] = useState(false);
-  const [currentPlan, setCurrentPlan] = useState<FitnessPlan | null>(null);
-
-  const { user } = useUser();
-  const router = useRouter();
-
-  const messageContainerRef = useRef<HTMLDivElement>(null);
-
-  // SOLUTION to get rid of "Meeting has ended" error
-  useEffect(() => {
-    const originalError = console.error;
-    // override console.error to ignore "Meeting has ended" errors
-    console.error = function (msg, ...args) {
-      if (
-        msg &&
-        (msg.includes("Meeting has ended") ||
-          (args[0] && args[0].toString().includes("Meeting has ended")))
-      ) {
-        console.log("Ignoring known error: Meeting has ended");
-        return; // don't pass to original handler
-      }
-
-      // pass all other errors to the original handler
-      return originalError.call(console, msg, ...args);
-    };
-
-    // restore original handler on unmount
-    return () => {
-      console.error = originalError;
-    };
-  }, []);
-
-  // auto-scroll messages
-  useEffect(() => {
-    if (messageContainerRef.current) {
-      messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
-    }
-  }, [messages]);
-
-  // navigate user to profile page after the call ends
-  useEffect(() => {
-    if (callEnded) {
-      const redirectTimer = setTimeout(() => {
-        router.push("/profile");
-      }, 1500);
-
-      return () => clearTimeout(redirectTimer);
-    }
-  }, [callEnded, router]);
-
-  // setup event listeners for vapi
-  useEffect(() => {
-    const handleCallStart = () => {
-      console.log("Call started");
-      setConnecting(false);
-      setCallActive(true);
-      setCallEnded(false);
-    };
-
-    const handleCallEnd = () => {
-      console.log("Call ended");
-      setCallActive(false);
-      setConnecting(false);
-      setIsSpeaking(false);
-      setCallEnded(true);
-    };
-
-    const handleSpeechStart = () => {
-      console.log("AI started Speaking");
-      setIsSpeaking(true);
-    };
-
-    const handleSpeechEnd = () => {
-      console.log("AI stopped Speaking");
-      setIsSpeaking(false);
-    };
-    const handleMessage = (message: any) => {
-      if (message.type === "transcript" && message.transcriptType === "final") {
-        const newMessage = { content: message.transcript, role: message.role };
-        setMessages((prev) => [...prev, newMessage]);
-      }
-    };
-
-    const handleError = (error: any) => {
-      console.log("Vapi Error", error);
-      setConnecting(false);
-      setCallActive(false);
-    };
-
-    vapi
-      .on("call-start", handleCallStart)
-      .on("call-end", handleCallEnd)
-      .on("speech-start", handleSpeechStart)
-      .on("speech-end", handleSpeechEnd)
-      .on("message", handleMessage)
-      .on("error", handleError);
-
-    // cleanup event listeners on unmount
-    return () => {
-      vapi
-        .off("call-start", handleCallStart)
-        .off("call-end", handleCallEnd)
-        .off("speech-start", handleSpeechStart)
-        .off("speech-end", handleSpeechEnd)
-        .off("message", handleMessage)
-        .off("error", handleError);
-    };
-  }, []);
-
-  const toggleCall = async () => {
-    if (callActive) vapi.stop();
-    else {
-      try {
-        setConnecting(true);
-        setMessages([]);
-        setCallEnded(false);
-
-        const fullName = user?.firstName
-          ? `${user.firstName} ${user.lastName || ""}`.trim()
-          : "There";
-
-        await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
-          variableValues: {
-            full_name: fullName,
-            user_id: user?.id,
-          },
-        });
-      } catch (error) {
-        console.log("Failed to start call", error);
-        setConnecting(false);
-      }
-    }
-  };
-
+const UserPrograms = () => {
   return (
-    <div className="flex flex-col min-h-screen text-foreground overflow-hidden  pb-6 pt-24">
-      <div className="container mx-auto px-4 h-full max-w-5xl">
-        {/* Title */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold font-mono">
-            <span>Generate Your </span>
-            <span className="text-primary uppercase">Fitness Program</span>
-          </h1>
-          <p className="text-muted-foreground mt-2">
-            Have a voice conversation with our AI assistant to create your personalized plan
-          </p>
-        </div>
-
-        {/* VIDEO CALL AREA */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          {/* AI ASSISTANT CARD */}
-          <Card className="bg-card/90 backdrop-blur-sm border border-border overflow-hidden relative">
-            <div className="aspect-video flex flex-col items-center justify-center p-6 relative">
-              {/* AI VOICE ANIMATION */}
-              <div
-                className={`absolute inset-0 ${
-                  isSpeaking ? "opacity-30" : "opacity-0"
-                } transition-opacity duration-300`}
-              >
-                {/* Voice wave animation when speaking */}
-                <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 flex justify-center items-center h-20">
-                  {[...Array(5)].map((_, i) => (
-                    <div
-                      key={i}
-                      className={`mx-1 h-16 w-1 bg-primary rounded-full ${
-                        isSpeaking ? "animate-sound-wave" : ""
-                      }`}
-                      style={{
-                        animationDelay: `${i * 0.1}s`,
-                        height: isSpeaking ? `${Math.random() * 50 + 20}%` : "5%",
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              {/* AI IMAGE */}
-              <div className="relative size-32 mb-4">
-                <div
-                  className={`absolute inset-0 bg-primary opacity-10 rounded-full blur-lg ${
-                    isSpeaking ? "animate-pulse" : ""
-                  }`}
-                />
-
-                <div className="relative w-full h-full rounded-full bg-card flex items-center justify-center border border-border overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-b from-primary/10 to-secondary/10"></div>
-                  <img
-                    src="/ai-avatar.png"
-                    alt="AI Assistant"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </div>
-
-              <h2 className="text-xl font-bold text-foreground">CodeFlex AI</h2>
-              <p className="text-sm text-muted-foreground mt-1">Fitness & Diet Coach</p>
-
-              {/* SPEAKING INDICATOR */}
-
-              <div
-                className={`mt-4 flex items-center gap-2 px-3 py-1 rounded-full bg-card border border-border ${
-                  isSpeaking ? "border-primary" : ""
-                }`}
-              >
-                <div
-                  className={`w-2 h-2 rounded-full ${
-                    isSpeaking ? "bg-primary animate-pulse" : "bg-muted"
-                  }`}
-                />
-
-                <span className="text-xs text-muted-foreground">
-                  {isSpeaking
-                    ? "Speaking..."
-                    : callActive
-                      ? "Listening..."
-                      : callEnded
-                        ? "Redirecting to profile..."
-                        : "Waiting..."}
-                </span>
-              </div>
+    <div className="w-full pb-24 pt-16 relative">
+      <div className="container mx-auto max-w-6xl px-4">
+        {/* HEADER- PROGRAM GALLERY */}
+        <div className="bg-card/90 backdrop-blur-sm border border-border rounded-lg overflow-hidden mb-16">
+          {/* HEADER BAR */}
+          <div className="flex items-center justify-between px-5 py-3 border-b border-border bg-background/70">
+            <div className="flex items-center gap-2">
+              <div className="w-2.5 h-2.5 rounded-full bg-primary"></div>
+              <span className="text-sm text-primary font-medium">Program Gallery</span>
             </div>
-          </Card>
+            <div className="text-sm text-muted-foreground">Featured Plans</div>
+          </div>
 
-          {/* USER CARD */}
-          <Card className={`bg-card/90 backdrop-blur-sm border overflow-hidden relative`}>
-            <div className="aspect-video flex flex-col items-center justify-center p-6 relative">
-              {/* User Image */}
-              <div className="relative size-32 mb-4">
-                <img
-                  src={user?.imageUrl}
-                  alt="User"
-                  // ADD THIS "size-full" class to make it rounded on all images
-                  className="size-full object-cover rounded-full"
-                />
+          {/* HEADER CONTENT */}
+          <div className="p-8 text-center">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              <span className="text-foreground">AI-Generated </span>
+              <span className="text-primary">Programs</span>
+            </h2>
+
+            <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-10">
+              Explore personalized fitness plans our AI assistant has created for other users
+            </p>
+
+            {/* STATS */}
+            <div className="flex items-center justify-center gap-16 mt-10 font-mono">
+              <div className="flex flex-col items-center">
+                <p className="text-3xl text-primary">500+</p>
+                <p className="text-sm text-muted-foreground uppercase tracking-wide mt-1">
+                  PROGRAMS
+                </p>
               </div>
-
-              <h2 className="text-xl font-bold text-foreground">You</h2>
-              <p className="text-sm text-muted-foreground mt-1">
-                {user ? (user.firstName + " " + (user.lastName || "")).trim() : "Guest"}
-              </p>
-
-              {/* User Ready Text */}
-              <div className={`mt-4 flex items-center gap-2 px-3 py-1 rounded-full bg-card border`}>
-                <div className={`w-2 h-2 rounded-full bg-muted`} />
-                <span className="text-xs text-muted-foreground">Ready</span>
+              <div className="w-px h-12 bg-border"></div>
+              <div className="flex flex-col items-center">
+                <p className="text-3xl text-primary">3min</p>
+                <p className="text-sm text-muted-foreground uppercase tracking-wide mt-1">
+                  CREATION TIME
+                </p>
               </div>
-            </div>
-          </Card>
-        </div>
-
-        {/* MESSAGE COINTER  */}
-        {messages.length > 0 && (
-          <div
-            ref={messageContainerRef}
-            className="w-full bg-card/90 backdrop-blur-sm border border-border rounded-xl p-4 mb-8 h-64 overflow-y-auto transition-all duration-300 scroll-smooth"
-          >
-            <div className="space-y-3">
-              {messages.map((msg, index) => (
-                <div key={index} className="message-item animate-fadeIn">
-                  <div className="font-semibold text-xs text-muted-foreground mb-1">
-                    {msg.role === "assistant" ? "CodeFlex AI" : "You"}:
-                  </div>
-                  <p className="text-foreground">{msg.content}</p>
-                </div>
-              ))}
-
-              {callEnded && (
-                <div className="message-item animate-fadeIn">
-                  <div className="font-semibold text-xs text-primary mb-1">System:</div>
-                  <p className="text-foreground">
-                    Your fitness program has been created! Redirecting to your profile...
-                  </p>
-                </div>
-              )}
+              <div className="w-px h-12 bg-border"></div>
+              <div className="flex flex-col items-center">
+                <p className="text-3xl text-primary">100%</p>
+                <p className="text-sm text-muted-foreground uppercase tracking-wide mt-1">
+                  PERSONALIZED
+                </p>
+              </div>
             </div>
           </div>
-        )}
-
-        {/* CALL CONTROLS */}
-        <div className="w-full flex justify-center gap-4">
-          <Button
-            className={`w-40 text-xl rounded-3xl ${
-              callActive
-                ? "bg-destructive hover:bg-destructive/90"
-                : callEnded
-                  ? "bg-green-600 hover:bg-green-700"
-                  : "bg-primary hover:bg-primary/90"
-            } text-white relative`}
-            onClick={toggleCall}
-            disabled={connecting || callEnded}
-          >
-            {connecting && (
-              <span className="absolute inset-0 rounded-full animate-ping bg-primary/50 opacity-75"></span>
-            )}
-
-            <span>
-              {callActive
-                ? "End Call"
-                : connecting
-                  ? "Connecting..."
-                  : callEnded
-                    ? "View Profile"
-                    : "Start Call"}
-            </span>
-          </Button>
         </div>
 
-        {/* WORKOUT PLAN ACCORDION */}
-        <Accordion type="multiple" className="space-y-4">
-          {currentPlan?.workoutPlan?.exercies?.map((exerciseDay: ExerciseDay, index: number) => (
-            <AccordionItem
-              key={index}
-              value={exerciseDay.day}
-              className="border rounded-lg"
+        {/* Program cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {USER_PROGRAMS.map((program) => (
+            <Card
+              key={program.id}
+              className="bg-card/90 backdrop-blur-sm border border-border hover:border-primary/50 transition-colors overflow-hidden"
             >
-              <AccordionTrigger className="px-4 py-2 hover:no-underline">
-                <div className="flex items-center justify-between w-full">
-                  <span className="font-medium">{exerciseDay.day}</span>
-                  <span className="text-sm text-muted-foreground">
-                    {exerciseDay.exercies?.length || 0} exercises
-                  </span>
+              {/* Card header with user info */}
+              <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-background/70">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-primary"></div>
+                  <span className="text-sm text-primary">USER.{program.id}</span>
                 </div>
-              </AccordionTrigger>
-              <AccordionContent className="px-4 py-2">
-                <div className="space-y-2">
-                  {exerciseDay.exercies?.map((exercise: string, exIndex: number) => (
-                    <div key={exIndex} className="flex items-center justify-between">
-                      <span>{exercise}</span>
-                      {exerciseDay.sets && exerciseDay.reps && (
-                        <span className="text-sm text-muted-foreground">
-                          {exerciseDay.sets} sets × {exerciseDay.reps} reps
-                        </span>
-                      )}
+                <div className="text-sm text-muted-foreground">
+                  {program.fitness_level.toUpperCase()}
+                </div>
+              </div>
+
+              <CardHeader className="pt-6 px-5">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="h-16 w-16 rounded-full overflow-hidden border border-border">
+                    <img
+                      src={program.profilePic}
+                      alt={`${program.first_name}`}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl text-foreground">
+                      {program.first_name}
+                      <span className="text-primary">.exe</span>
+                    </CardTitle>
+                    <div className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
+                      <Users className="h-4 w-4" />
+                      {program.age}y • {program.workout_days}d/week
                     </div>
-                  ))}
-                  {exerciseDay.description && (
-                    <p className="text-sm text-muted-foreground mt-2">
-                      {exerciseDay.description}
-                    </p>
-                  )}
+                  </div>
                 </div>
-              </AccordionContent>
-            </AccordionItem>
+
+                <div className="flex justify-between items-center gap-4">
+                  <div className="px-3 py-1 bg-primary/10 rounded border border-primary/20 text-sm text-primary flex items-center gap-2">
+                    <Sparkles className="h-4 w-4" />
+                    {program.fitness_goal}
+                  </div>
+                  <div className="text-sm text-muted-foreground flex items-center gap-2">
+                    <Clock className="h-4 w-4" />
+                    v3.5
+                  </div>
+                </div>
+              </CardHeader>
+
+              <CardContent className="px-5">
+                {/* Program details */}
+                <div className="space-y-5 pt-2">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 rounded-md bg-primary/10 text-primary mt-0.5">
+                      <Dumbbell className="h-5 w-5" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex justify-between items-center">
+                        <h3 className="font-medium text-foreground">
+                          {program.workout_plan.title}
+                        </h3>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {program.equipment_access}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 rounded-md bg-secondary/10 text-secondary mt-0.5">
+                      <AppleIcon className="h-5 w-5" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex justify-between items-center">
+                        <h3 className="font-medium text-foreground">{program.diet_plan.title}</h3>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        System optimized nutrition
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 rounded-md bg-primary/10 text-primary mt-0.5">
+                      <ShieldIcon className="h-5 w-5" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex justify-between items-center">
+                        <h3 className="font-medium text-foreground">AI Safety Protocols</h3>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Protection systems enabled
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Program description */}
+                <div className="mt-5 pt-5 border-t border-border">
+                  <div className="text-sm text-muted-foreground">
+                    <span className="text-primary">&gt; </span>
+                    {program.workout_plan.description.substring(0, 120)}...
+                  </div>
+                </div>
+              </CardContent>
+
+              <CardFooter className="px-5 py-4 border-t border-border">
+                <Link href={`/programs/${program.id}`} className="w-full">
+                  <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                    View Program Details
+                    <ChevronRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </CardFooter>
+            </Card>
           ))}
-        </Accordion>
+        </div>
+
+        {/* CTA section */}
+        <div className="mt-16 text-center">
+          <Link href="/generate-program">
+            <Button
+              size="lg"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg"
+            >
+              Generate Your Program
+              <Sparkles className="ml-2 h-5 w-5" />
+            </Button>
+          </Link>
+          <p className="text-muted-foreground mt-4">
+            Join 500+ users with AI-customized fitness programs
+          </p>
+        </div>
       </div>
     </div>
   );
 };
-export default GenerateProgramPage;
+
+export default UserPrograms;
