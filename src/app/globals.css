@@ -47,124 +47,137 @@
   /* Base Variables */
   --radius: 0.625rem;
 
-  /* Cyberpunk Theme Colors */
-  --cyber-black: #000000;
-  --cyber-dark: #0a0c14;
-  --cyber-blue-bright: #18cef2;
-  --cyber-blue: #1089bd;
-  --cyber-blue-dark: #0b4a7d;
-  --cyber-blue-glow: #38bdf8;
-  --cyber-accent: #0ff4;
+  /* Modern Theme Colors */
+  --primary-bright: #3b82f6;
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --accent-bright: #f43f5e;
+  --accent: #e11d48;
+  --accent-dark: #be123c;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #0ea5e9;
 
-  /* Background */
-  --background: var(--cyber-dark);
-  --foreground: #f2f2f2;
+  /* Background - Light and Dark Mix */
+  --background: #f8fafc;
+  --foreground: #020617;
 
   /* Card and popover elements */
-  --card: #111827;
-  --card-foreground: #f2f2f2;
-  --popover: #111827;
-  --popover-foreground: #f2f2f2;
+  --card: #ffffff;
+  --card-foreground: #020617;
+  --popover: #ffffff;
+  --popover-foreground: #020617;
 
-  /* Primary - Main blue */
-  --primary: var(--cyber-blue-bright);
-  --primary-foreground: var(--cyber-dark);
+  /* Primary - Vibrant blue */
+  --primary: var(--primary-bright);
+  --primary-foreground: #ffffff;
 
-  /* Secondary - Darker blue */
-  --secondary: var(--cyber-blue);
+  /* Secondary - Rich purple */
+  --secondary: #8b5cf6;
   --secondary-foreground: #ffffff;
 
-  /* Accent - Light blue with glow */
-  --accent: var(--cyber-blue-glow);
-  --accent-foreground: var(--cyber-dark);
+  /* Accent - Bright pink */
+  --accent: var(--accent-bright);
+  --accent-foreground: #ffffff;
 
   /* Muted elements */
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
 
   /* System colors */
-  --destructive: #ef4444;
-  --border: rgba(24, 206, 242, 0.2);
-  --input: rgba(24, 206, 242, 0.2);
-  --ring: var(--cyber-blue);
+  --destructive: var(--error);
+  --border: rgba(59, 130, 246, 0.1);
+  --input: rgba(59, 130, 246, 0.1);
+  --ring: var(--primary);
 
-  /* Chart colors - cyberpunk theme */
-  --chart-1: var(--cyber-blue-bright);
-  --chart-2: #3b82f6;
-  --chart-3: var(--cyber-blue);
-  --chart-4: #06b6d4;
-  --chart-5: #0284c7;
+  /* Chart colors - vibrant theme */
+  --chart-1: var(--primary-bright);
+  --chart-2: var(--accent-bright);
+  --chart-3: var(--success);
+  --chart-4: var(--warning);
+  --chart-5: var(--info);
 
   /* Sidebar colors */
-  --sidebar: var(--cyber-dark);
-  --sidebar-foreground: #f2f2f2;
-  --sidebar-primary: var(--cyber-blue-bright);
-  --sidebar-primary-foreground: var(--cyber-dark);
-  --sidebar-accent: var(--cyber-blue);
+  --sidebar: #0f172a;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: var(--primary-bright);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--accent-bright);
   --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: rgba(24, 206, 242, 0.2);
-  --sidebar-ring: var(--cyber-blue);
+  --sidebar-border: rgba(59, 130, 246, 0.1);
+  --sidebar-ring: var(--primary);
 
-  /* Custom Cyberpunk UI Variables */
-  --cyber-grid-color: rgba(24, 206, 242, 0.05);
-  --cyber-glow-primary: rgba(24, 206, 242, 0.2);
-  --cyber-glow-strong: rgba(24, 206, 242, 0.5);
-  --cyber-line-color: rgba(24, 206, 242, 0.3);
-  --cyber-terminal-bg: rgba(0, 0, 0, 0.7);
-  --cyber-text-bright: #ffffff;
-  --cyber-text-muted: rgba(242, 242, 242, 0.7);
-  --cyber-text-dim: rgba(242, 242, 242, 0.5);
+  /* Custom UI Variables */
+  --grid-color: rgba(59, 130, 246, 0.05);
+  --glow-primary: rgba(59, 130, 246, 0.1);
+  --glow-strong: rgba(59, 130, 246, 0.2);
+  --line-color: rgba(59, 130, 246, 0.1);
+  --terminal-bg: rgba(255, 255, 255, 0.9);
+  --text-bright: #020617;
+  --text-muted: rgba(2, 6, 23, 0.7);
+  --text-dim: rgba(2, 6, 23, 0.5);
 }
 
 .dark {
-  /* Background */
-  --background: var(--cyber-dark);
-  --foreground: #f2f2f2;
+  /* Background - Sophisticated Dark */
+  --background: #0a0a0a;
+  --foreground: #fafafa;
 
   /* Card and popover elements */
-  --card: #111827;
-  --card-foreground: #f2f2f2;
-  --popover: #111827;
-  --popover-foreground: #f2f2f2;
+  --card: #171717;
+  --card-foreground: #fafafa;
+  --popover: #171717;
+  --popover-foreground: #fafafa;
 
-  /* Primary - Main blue */
-  --primary: var(--cyber-blue-bright);
-  --primary-foreground: var(--cyber-dark);
+  /* Primary - Vibrant blue */
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
 
-  /* Secondary - Darker blue */
-  --secondary: var(--cyber-blue);
+  /* Secondary - Rich purple */
+  --secondary: #8b5cf6;
   --secondary-foreground: #ffffff;
 
-  /* Accent - Light blue with glow */
-  --accent: var(--cyber-blue-glow);
-  --accent-foreground: var(--cyber-dark);
+  /* Accent - Bright pink */
+  --accent: #f43f5e;
+  --accent-foreground: #ffffff;
 
   /* Muted elements */
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
+  --muted: #262626;
+  --muted-foreground: #a3a3a3;
 
   /* System colors */
   --destructive: #ef4444;
-  --border: rgba(24, 206, 242, 0.2);
-  --input: rgba(24, 206, 242, 0.2);
-  --ring: var(--cyber-blue);
+  --border: rgba(59, 130, 246, 0.1);
+  --input: rgba(59, 130, 246, 0.1);
+  --ring: var(--primary);
 
-  /* Chart colors - cyberpunk theme */
-  --chart-1: var(--cyber-blue-bright);
-  --chart-2: #3b82f6;
-  --chart-3: var(--cyber-blue);
-  --chart-4: #06b6d4;
-  --chart-5: #0284c7;
+  /* Chart colors - vibrant theme */
+  --chart-1: #3b82f6;
+  --chart-2: #f43f5e;
+  --chart-3: #22c55e;
+  --chart-4: #f59e0b;
+  --chart-5: #0ea5e9;
 
   /* Sidebar colors */
-  --sidebar: var(--cyber-dark);
-  --sidebar-foreground: #f2f2f2;
-  --sidebar-primary: var(--cyber-blue-bright);
-  --sidebar-primary-foreground: var(--cyber-dark);
-  --sidebar-accent: var(--cyber-blue);
+  --sidebar: #171717;
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f43f5e;
   --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: rgba(24, 206, 242, 0.2);
-  --sidebar-ring: var(--cyber-blue);
+  --sidebar-border: rgba(59, 130, 246, 0.1);
+  --sidebar-ring: var(--primary);
+
+  /* Custom UI Variables */
+  --grid-color: rgba(59, 130, 246, 0.05);
+  --glow-primary: rgba(59, 130, 246, 0.1);
+  --glow-strong: rgba(59, 130, 246, 0.2);
+  --line-color: rgba(59, 130, 246, 0.1);
+  --terminal-bg: rgba(23, 23, 23, 0.9);
+  --text-bright: #fafafa;
+  --text-muted: rgba(250, 250, 250, 0.7);
+  --text-dim: rgba(250, 250, 250, 0.5);
 }
 
 @layer base {
