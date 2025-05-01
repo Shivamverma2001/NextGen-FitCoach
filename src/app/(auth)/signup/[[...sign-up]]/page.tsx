@@ -4,7 +4,7 @@ import React from 'react'
 const SignUpPage = () => {
   return (
     <div className='flex h-screen w-full items-center justify-center'>
-        <SignUp/>
+        <SignUp afterSignUpUrl="/" redirectUrl="/"/>
     </div>
   )
 }

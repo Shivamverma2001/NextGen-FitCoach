@@ -6,6 +6,35 @@ import { vapi } from "@/lib/vapi";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+
+interface ExerciseDay {
+  day: string;
+  exercies: string[];
+  sets?: number;
+  reps?: number;
+  description?: string;
+}
+
+interface WorkoutPlan {
+  schedule: string[];
+  exercies: ExerciseDay[];
+}
+
+interface DietPlan {
+  dailyCalories: number;
+  meals: {
+    name: string;
+    foods: string[];
+  }[];
+}
+
+interface FitnessPlan {
+  workoutPlan: WorkoutPlan;
+  dietPlan: DietPlan;
+  name: string;
+  isActive: boolean;
+}
 
 const GenerateProgramPage = () => {
   const [callActive, setCallActive] = useState(false);
@@ -13,6 +42,7 @@ const GenerateProgramPage = () => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [messages, setMessages] = useState<any[]>([]);
   const [callEnded, setCallEnded] = useState(false);
+  const [currentPlan, setCurrentPlan] = useState<FitnessPlan | null>(null);
 
   const { user } = useUser();
   const router = useRouter();
@@ -317,6 +347,45 @@ const GenerateProgramPage = () => {
             </span>
           </Button>
         </div>
+
+        {/* WORKOUT PLAN ACCORDION */}
+        <Accordion type="multiple" className="space-y-4">
+          {currentPlan?.workoutPlan?.exercies?.map((exerciseDay: ExerciseDay, index: number) => (
+            <AccordionItem
+              key={index}
+              value={exerciseDay.day}
+              className="border rounded-lg"
+            >
+              <AccordionTrigger className="px-4 py-2 hover:no-underline">
+                <div className="flex items-center justify-between w-full">
+                  <span className="font-medium">{exerciseDay.day}</span>
+                  <span className="text-sm text-muted-foreground">
+                    {exerciseDay.exercies?.length || 0} exercises
+                  </span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="px-4 py-2">
+                <div className="space-y-2">
+                  {exerciseDay.exercies?.map((exercise: string, exIndex: number) => (
+                    <div key={exIndex} className="flex items-center justify-between">
+                      <span>{exercise}</span>
+                      {exerciseDay.sets && exerciseDay.reps && (
+                        <span className="text-sm text-muted-foreground">
+                          {exerciseDay.sets} sets × {exerciseDay.reps} reps
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                  {exerciseDay.description && (
+                    <p className="text-sm text-muted-foreground mt-2">
+                      {exerciseDay.description}
+                    </p>
+                  )}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
       </div>
     </div>
   );
