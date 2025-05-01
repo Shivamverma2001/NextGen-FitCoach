@@ -43,21 +43,21 @@ export default function RootLayout({
   return (
     <ConvexClerkProvider>
       <ThemeProvider>
-        <html lang="en">
-          <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-          >
-            <Navbar />
-            <div className="fixed inset-0 -z-1">
-              <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-background"></div>
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <Navbar />
+        <div className="fixed inset-0 -z-1">
+            <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-background"></div>
               <div className="absolute inset-0 bg-[linear-gradient(var(--grid-color)_1px,transparent_1px),linear-gradient(90deg,var(--grid-color)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
-            </div>
-            <main className="pt-24 flex-grow">
-              {children}
-            </main>
-            <Footer />
-          </body>
-        </html>
+          </div>
+          <main className="pt-24 flex-grow">
+          {children}
+          </main>
+        <Footer />
+      </body>
+    </html>
       </ThemeProvider>
     </ConvexClerkProvider>
   );
