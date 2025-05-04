@@ -1,36 +1,134 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NextGen AI Fitness Coach 🏋️‍♂️
 
-## Getting Started
+A revolutionary AI-powered fitness coaching platform that combines the power of Convex, Vapi, and Google's Gemini to provide personalized fitness guidance and workout programs.
 
-First, run the development server:
+![NextGen AI Fitness Coach](public/og.png)
 
+## 🌟 Features
+
+- **AI-Powered Workout Generation**: Create personalized workout programs using Google's Gemini AI
+- **Voice Interaction**: Natural conversation with your AI fitness coach using Vapi
+- **Real-time Data Sync**: Seamless data management with Convex backend
+- **User Authentication**: Secure login and profile management with Clerk
+- **Responsive Design**: Beautiful UI built with Next.js and Tailwind CSS
+- **Dark Mode Support**: Eye-friendly interface with dark mode support
+
+## 📹 Project Demo
+
+Check out the project demo video on LinkedIn:
+[NextGen AI Fitness Coach Demo](https://www.linkedin.com/posts/shivam-verma1-_nextjs-tailwindcss-shadcnui-activity-7324330274962444289-IVQV?utm_source=share&utm_medium=member_desktop&rcm=ACoAADOQ4akBNBBSuRIpdVpjjXtvdKaakqh8KJ0)
+
+## 🚀 Tech Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Backend**: Convex
+- **AI**: Google Gemini, Vapi
+- **Authentication**: Clerk
+- **Styling**: Tailwind CSS, Radix UI
+- **Database**: Convex
+
+## 📋 Prerequisites
+
+- Node.js (v18 or higher)
+- npm or yarn
+- Convex account
+- Google Gemini API key
+- Vapi API key
+- Clerk account
+
+## 🛠️ Installation
+
+1. Clone the repository:
 ```bash
+git clone https://github.com/yourusername/NextGen-FitCoach.git
+cd NextGen-FitCoach
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Set up Convex:
+```bash
+# Install Convex CLI globally
+npm install -g convex
+
+# Login to Convex
+npx convex dev
+
+# Deploy your Convex backend
+npx convex deploy
+```
+
+4. Set up environment variables:
+Create a `.env.local` file in the root directory with the following variables:
+```env
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
+NEXT_PUBLIC_CONVEX_URL=your_convex_url
+GOOGLE_GEMINI_API_KEY=your_gemini_api_key
+VAPI_API_KEY=your_vapi_api_key
+```
+
+5. Start the development server:
+```bash
+# Start Next.js development server
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# In a separate terminal, start Convex development server
+npx convex dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🎯 Usage
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Sign Up/Login**
+   - Create an account or log in using the authentication system
+   - Complete your profile with fitness goals and preferences
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. **Generate Workout Program**
+   - Navigate to the Generate Program section
+   - Input your fitness goals, preferences, and constraints
+   - Let the AI create a personalized workout plan
 
-## Learn More
+3. **Interact with AI Coach**
+   - Use voice commands to interact with your AI fitness coach
+   - Get real-time feedback and adjustments to your workout
+   - Ask questions about exercises and form
 
-To learn more about Next.js, take a look at the following resources:
+4. **Track Progress**
+   - Monitor your workout history
+   - View progress statistics
+   - Get AI-powered insights and recommendations
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📱 Screenshots
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+[Add screenshots of your application here]
 
-## Deploy on Vercel
+## 🤝 Contributing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Google Gemini for AI capabilities
+- Vapi for voice interaction
+- Convex for backend services
+- Clerk for authentication
+- The open-source community for amazing tools and libraries
+
+## 📞 Support
+
+For support, email [your-email@example.com] or open an issue in the repository.
+
+---
+
+Made with ❤️ by [Your Name]
